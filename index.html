@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recamán Sonifier</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Recamán Sonifier</h1>
+    <p class="subtitle">
+      The sequence <code>a(n) = a(n-1) − n</code> if that result is positive and not yet seen,
+      otherwise <code>a(n) + n</code> — drawn as arcs and played as music.
+      <a href="#" id="help-link">What is this?</a>
+    </p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label>Terms: <input type="range" id="count" min="10" max="150" value="70"><span id="count-val">70</span></label>
+      <label>Tempo: <input type="range" id="tempo" min="80" max="600" value="300"><span id="tempo-val">300</span> ms/note</label>
+      <label>Octaves: <input type="range" id="octaves" min="2" max="6" value="4"><span id="octaves-val">4</span></label>
+      <label>Instrument:
+        <select id="instrument">
+          <option value="pluck">Pluck (Karplus–Strong)</option>
+          <option value="bell">Bell (FM)</option>
+          <option value="sine">Pure sine</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="pentatonic" checked> Snap to pentatonic scale</label>
+      <div class="buttons">
+        <button id="play" class="primary">▶ Play</button>
+        <button id="stop">■ Stop</button>
+        <button id="regen">↻ Regenerate visual</button>
+        <button id="export-png">⤓ Export PNG</button>
+      </div>
+    </section>
+
+    <section class="stage">
+      <canvas id="viz"></canvas>
+      <div id="status">Press Play to hear the sequence.</div>
+    </section>
+
+    <section class="info">
+      <div><strong>Now playing:</strong> <span id="now-note">—</span></div>
+      <div><strong>Values seen:</strong> <span id="seen-count">0</span></div>
+      <div><strong>Collisions (repeats):</strong> <span id="collisions">0</span></div>
+      <div><strong>Largest jump:</strong> <span id="max-jump">0</span></div>
+    </section>
+  </main>
+
+  <dialog id="help-dialog">
+    <h2>The Recamán sequence</h2>
+    <p>Start at 0. For step <em>n</em>, try to move <em>n</em> steps backward:
+       <code>a(n) = a(n−1) − n</code> — but only if the result is positive (<code>&gt; 0</code>)
+       and has never appeared before. Otherwise move forward instead:
+       <code>a(n) = a(n−1) + n</code>.</p>
+    <p>The first terms are: 0, 1, 3, 6, 2, 7, 13, 20, 12, 21, 11, 22, 10, 23, 9, 24, 8, 25, 43, 62…</p>
+    <p>It is an open problem whether every positive integer eventually appears. Here the sequence
+       is drawn as semicircular arcs (as in the famous Numberphile visual) and each value is mapped
+       to a musical pitch, so its jagged, repeating-but-never-quite structure can be heard.</p>
+    <form method="dialog"><button>Close</button></form>
+  </dialog>
+
+  <script src="audio.js"></script>
+  <script src="visualizer.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
