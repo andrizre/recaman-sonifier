@@ -35,6 +35,9 @@ Audio API, so any modern browser works.)
 - **Instrument** — pluck / bell / sine
 - **Pentatonic** — snap pitches to a pentatonic scale (more musical, less chaotic)
 - **Export PNG** — save the arc drawing
+- **Copy link** — copy a URL with the full configuration in the hash
+  (`#t<count>:m<tempo>:o<octaves>:i<instrument>:p<0|1>`); opening such a link
+  restores the settings. Invalid or out-of-range values in the hash are ignored.
 
 ## Files
 
@@ -43,6 +46,7 @@ Audio API, so any modern browser works.)
 - `audio.js` — Web Audio engine (three synth voices, reverb, pitch mapping)
 - `visualizer.js` — canvas arc renderer with playback highlighting
 - `main.js` — sequence generation and app controller
+- `state-url.js` — URL-hash state encoding/decoding (shareable links)
 
 ## Concept
 

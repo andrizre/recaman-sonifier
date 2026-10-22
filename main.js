@@ -11,6 +11,7 @@
   const stopBtn = document.getElementById("stop");
   const regenBtn = document.getElementById("regen");
   const exportBtn = document.getElementById("export-png");
+  const copyLinkBtn = document.getElementById("copy-link");
   const helpLink = document.getElementById("help-link");
   const helpDialog = document.getElementById("help-dialog");
   const statusEl = document.getElementById("status");
@@ -132,6 +133,45 @@
   stopBtn.addEventListener("click", stopPlayback);
   regenBtn.addEventListener("click", regenerate);
   helpLink.addEventListener("click", (e) => { e.preventDefault(); helpDialog.showModal(); });
+
+  copyLinkBtn.addEventListener("click", () => {
+    const hash = "#" + RecamanState.encode({
+      count: Number(countEl.value),
+      tempo: Number(tempoEl.value),
+      octaves: Number(octavesEl.value),
+      instrument: instrumentEl.value,
+      pentatonic: pentatonicEl.checked,
+    });
+    const url = location.origin + location.pathname + hash;
+    history.replaceState(null, "", hash);
+    const done = () => {
+      const old = copyLinkBtn.textContent;
+      copyLinkBtn.textContent = "✓ Copied";
+      setTimeout(() => { copyLinkBtn.textContent = old; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done).catch(() => promptFallback(url, done));
+    } else {
+      promptFallback(url, done);
+    }
+  });
+
+  function promptFallback(url, done) {
+    window.prompt("Copy this link:", url);
+    done();
+  }
+
+  // Restore configuration from URL hash on load (before first render).
+  (function restoreFromHash() {
+    const cfg = RecamanState.decode(location.hash);
+    if (!cfg) return;
+    if (cfg.count != null) { countEl.value = cfg.count; countVal.textContent = cfg.count; }
+    if (cfg.tempo != null) { tempoEl.value = cfg.tempo; tempoVal.textContent = cfg.tempo; }
+    if (cfg.octaves != null) { octavesEl.value = cfg.octaves; octavesVal.textContent = cfg.octaves; }
+    if (cfg.instrument) instrumentEl.value = cfg.instrument;
+    if (cfg.pentatonic != null) pentatonicEl.checked = cfg.pentatonic;
+    statusEl.textContent = "Configuration restored from link.";
+  })();
 
   exportBtn.addEventListener("click", () => {
     RecamanVisualizer.draw(seq, -1);
